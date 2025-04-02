@@ -110,8 +110,8 @@
   </div>
 
   <div class="dice">
-    <div class="die" id="die1"></div>
-    <div class="die" id="die2"></div>
+    <div class="die" id="die1">-</div>
+    <div class="die" id="die2">-</div>
   </div>
   <div class="highlight">Somme : <span id="sum">-</span></div>
 
@@ -178,6 +178,8 @@
 
       die1El.style.backgroundImage = `url(${diceImages[d1]})`;
       die2El.style.backgroundImage = `url(${diceImages[d2]})`;
+      die1El.textContent = d1;
+      die2El.textContent = d2;
       sumEl.textContent = total;
 
       [die1El, die2El, sumEl].forEach(el => {
@@ -219,6 +221,8 @@
       document.getElementById("message").textContent = "";
       document.getElementById("die1").style.backgroundImage = "";
       document.getElementById("die2").style.backgroundImage = "";
+      document.getElementById("die1").textContent = "-";
+      document.getElementById("die2").textContent = "-";
       document.getElementById("sum").textContent = "-";
       updateUI();
     }
