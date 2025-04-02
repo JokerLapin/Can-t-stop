@@ -4,15 +4,77 @@
   <meta charset="UTF-8">
   <title>Pairs & Perils</title>
   <style>
-    body { font-family: sans-serif; text-align: center; background: #f0f0f0; padding: 20px; }
-    .scoreboard, .controls, .dice { margin: 20px auto; max-width: 500px; }
-    .player { padding: 10px; margin: 10px; border-radius: 10px; font-size: 1.2rem; }
-    .active { background-color: #d0f0d0; font-weight: bold; }
-    .dice { font-size: 2rem; margin-top: 30px; }
-    .highlight { font-size: 2.5rem; font-weight: bold; color: #222; }
-    button { padding: 10px 20px; margin: 5px; font-size: 1rem; cursor: pointer; }
-    #message { margin-top: 20px; font-size: 1.1rem; }
-    #endgame { display: none; margin-top: 30px; font-size: 1.3rem; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #e0eafc, #cfdef3);
+      padding: 20px;
+      margin: 0;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+    .scoreboard, .controls, .dice {
+      margin: 20px auto;
+      max-width: 500px;
+    }
+    .player {
+      padding: 10px;
+      margin: 10px;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      background: #ffffffaa;
+      transition: all 0.3s ease;
+    }
+    .active {
+      background-color: #b2f7b2;
+      font-weight: bold;
+      box-shadow: 0 0 10px #2ecc71;
+    }
+    .dice {
+      font-size: 2rem;
+      margin-top: 30px;
+    }
+    .highlight {
+      font-size: 2.8rem;
+      font-weight: bold;
+      color: #34495e;
+      display: inline-block;
+      transition: transform 0.2s;
+    }
+    .highlight.animate {
+      transform: scale(1.4);
+    }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #3498db;
+      color: white;
+      transition: background-color 0.2s;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+    #message {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      color: #2c3e50;
+    }
+    #endgame {
+      display: none;
+      margin-top: 30px;
+      font-size: 1.3rem;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 <body>
@@ -59,9 +121,7 @@
       const die2 = Math.floor(Math.random() * 6) + 1;
       const sum = die1 + die2;
 
-      document.getElementById("die1").textContent = die1;
-      document.getElementById("die2").textContent = die2;
-      document.getElementById("sum").textContent = sum;
+      animateDice(die1, die2, sum);
 
       if (sum % 2 === 0) {
         turnScore += sum;
@@ -73,6 +133,21 @@
       }
 
       updateUI();
+    }
+
+    function animateDice(d1, d2, total) {
+      const die1El = document.getElementById("die1");
+      const die2El = document.getElementById("die2");
+      const sumEl = document.getElementById("sum");
+
+      die1El.textContent = d1;
+      die2El.textContent = d2;
+      sumEl.textContent = total;
+
+      [die1El, die2El, sumEl].forEach(el => {
+        el.classList.add("animate");
+        setTimeout(() => el.classList.remove("animate"), 300);
+      });
     }
 
     function hold() {
