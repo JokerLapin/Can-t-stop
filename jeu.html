@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Pairs & Perils</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; background: #f0f0f0; padding: 20px; }
+    .scoreboard, .controls, .dice { margin: 20px auto; max-width: 500px; }
+    .player { padding: 10px; margin: 10px; border-radius: 10px; }
+    .active { background-color: #d0f0d0; font-weight: bold; }
+    .dice { font-size: 2rem; }
+    button { padding: 10px 20px; margin: 5px; font-size: 1rem; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>🎲 Pairs & Perils</h1>
+  <div class="scoreboard">
+    <div id="player1" class="player active">Joueur 1 : <span id="score1">0</span> points</div>
+    <div id="player2" class="player">Joueur 2 : <span id="score2">0</span> points</div>
+    <div>Score du tour : <span id="turnScore">0</span></div>
+  </div>
+
+  <div class="dice">
+    Dé 1 : <span id="die1">-</span> | Dé 2 : <span id="die2">-</span>
+  </div>
+
+  <div class="controls">
+    <button onclick="rollDice()">🎲 Lancer les dés</button>
+    <button onclick="hold()">✅ Valider</button>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    let scores = [0, 0];
+    let turnScore = 0;
+    let currentPlayer = 0; // 0: joueur 1, 1: joueur 2
+
+    function updateUI() {
+      document.getElementById("score1").textContent = scores[0];
+      document.getElementById("score2").textContent = scores[1];
+      document.getElementById("turnScore").textContent = turnScore;
+      document.getElementById("player1").classList.toggle("active", currentPlayer === 0);
+      document.getElementById("player2").classList.toggle("active", currentPlayer === 1);
+    }
+
+    function rollDice() {
+      const die1 = Math.floor(Math.random() * 6) + 1;
+      const die2 = Math.floor(Math.random() * 6) + 1;
+      const sum = die1 + die2;
+      
+      document.getElementById("die1").textContent = die1;
+      document.getElementById("die2").textContent = die2;
+
+      if (sum % 2 === 0) {
+        turnScore += sum;
+        document.getElementById("message").textContent = `Somme paire (${sum}) → Continue ou valide !`;
+      } else {
+        document.getElementById("message").textContent = `Somme impaire (${sum}) → Tu perds les points du tour !`;
+        turnScore = 0;
+        switchPlayer();
+      }
+
+      updateUI();
+    }
+
+    function hold() {
+      scores[currentPlayer] += turnScore;
+      turnScore = 0;
+
+      if (scores[currentPlayer] >= 50) {
+        alert(`Joueur ${currentPlayer + 1} a gagné ! 🎉`);
+        scores = [0, 0];
+      }
+
+      switchPlayer();
+      updateUI();
+    }
+
+    function switchPlayer() {
+      currentPlayer = 1 - currentPlayer;
+    }
+
+    updateUI();
+  </script>
+</body>
+</html>
+ je
