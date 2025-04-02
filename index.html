@@ -6,10 +6,13 @@
   <style>
     body { font-family: sans-serif; text-align: center; background: #f0f0f0; padding: 20px; }
     .scoreboard, .controls, .dice { margin: 20px auto; max-width: 500px; }
-    .player { padding: 10px; margin: 10px; border-radius: 10px; }
+    .player { padding: 10px; margin: 10px; border-radius: 10px; font-size: 1.2rem; }
     .active { background-color: #d0f0d0; font-weight: bold; }
-    .dice { font-size: 2rem; }
+    .dice { font-size: 2rem; margin-top: 30px; }
+    .highlight { font-size: 2.5rem; font-weight: bold; color: #222; }
     button { padding: 10px 20px; margin: 5px; font-size: 1rem; cursor: pointer; }
+    #message { margin-top: 20px; font-size: 1.1rem; }
+    #endgame { display: none; margin-top: 30px; font-size: 1.3rem; }
   </style>
 </head>
 <body>
@@ -17,45 +20,54 @@
   <div class="scoreboard">
     <div id="player1" class="player active">Joueur 1 : <span id="score1">0</span> points</div>
     <div id="player2" class="player">Joueur 2 : <span id="score2">0</span> points</div>
-    <div>Score du tour : <span id="turnScore">0</span></div>
+    <div>🔁 <strong>Score du tour en cours pour Joueur <span id="currentPlayerDisplay">1</span> :</strong> <span id="turnScore">0</span></div>
   </div>
 
   <div class="dice">
-    Dé 1 : <span id="die1">-</span> | Dé 2 : <span id="die2">-</span>
+    <div>Lancer : <span class="highlight" id="die1">-</span> + <span class="highlight" id="die2">-</span> = <span class="highlight" id="sum">-</span></div>
   </div>
 
   <div class="controls">
-    <button onclick="rollDice()">🎲 Lancer les dés</button>
-    <button onclick="hold()">✅ Valider</button>
+    <button onclick="rollDice()" id="rollBtn">🎲 Lancer les dés</button>
+    <button onclick="hold()" id="holdBtn">✅ Valider</button>
     <div id="message"></div>
+  </div>
+
+  <div id="endgame">
+    <p id="endMessage"></p>
+    <button onclick="resetGame()">🔁 Rejouer</button>
   </div>
 
   <script>
     let scores = [0, 0];
     let turnScore = 0;
-    let currentPlayer = 0; // 0: joueur 1, 1: joueur 2
+    let currentPlayer = 0;
+    let gameEnded = false;
 
     function updateUI() {
       document.getElementById("score1").textContent = scores[0];
       document.getElementById("score2").textContent = scores[1];
       document.getElementById("turnScore").textContent = turnScore;
+      document.getElementById("currentPlayerDisplay").textContent = currentPlayer + 1;
       document.getElementById("player1").classList.toggle("active", currentPlayer === 0);
       document.getElementById("player2").classList.toggle("active", currentPlayer === 1);
     }
 
     function rollDice() {
+      if (gameEnded) return;
       const die1 = Math.floor(Math.random() * 6) + 1;
       const die2 = Math.floor(Math.random() * 6) + 1;
       const sum = die1 + die2;
-      
+
       document.getElementById("die1").textContent = die1;
       document.getElementById("die2").textContent = die2;
+      document.getElementById("sum").textContent = sum;
 
       if (sum % 2 === 0) {
         turnScore += sum;
-        document.getElementById("message").textContent = `Somme paire (${sum}) → Continue ou valide !`;
+        document.getElementById("message").textContent = `✅ Somme paire (${sum}) → Tu peux continuer ou valider.`;
       } else {
-        document.getElementById("message").textContent = `Somme impaire (${sum}) → Tu perds les points du tour !`;
+        document.getElementById("message").textContent = `❌ Somme impaire (${sum}) → Tu perds les points de ce tour !`;
         turnScore = 0;
         switchPlayer();
       }
@@ -64,12 +76,17 @@
     }
 
     function hold() {
+      if (gameEnded) return;
       scores[currentPlayer] += turnScore;
       turnScore = 0;
 
       if (scores[currentPlayer] >= 50) {
-        alert(`Joueur ${currentPlayer + 1} a gagné ! 🎉`);
-        scores = [0, 0];
+        gameEnded = true;
+        document.getElementById("rollBtn").style.display = "none";
+        document.getElementById("holdBtn").style.display = "none";
+        document.getElementById("endMessage").innerHTML = `🎉 Joueur ${currentPlayer + 1} a gagné la partie !<br>Score final :<br>Joueur 1 : ${scores[0]} points<br>Joueur 2 : ${scores[1]} points`;
+        document.getElementById("endgame").style.display = "block";
+        return;
       }
 
       switchPlayer();
@@ -80,8 +97,22 @@
       currentPlayer = 1 - currentPlayer;
     }
 
+    function resetGame() {
+      scores = [0, 0];
+      turnScore = 0;
+      currentPlayer = 0;
+      gameEnded = false;
+      document.getElementById("rollBtn").style.display = "inline-block";
+      document.getElementById("holdBtn").style.display = "inline-block";
+      document.getElementById("endgame").style.display = "none";
+      document.getElementById("message").textContent = "";
+      document.getElementById("die1").textContent = "-";
+      document.getElementById("die2").textContent = "-";
+      document.getElementById("sum").textContent = "-";
+      updateUI();
+    }
+
     updateUI();
   </script>
 </body>
 </html>
- je
