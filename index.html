@@ -36,13 +36,34 @@
     .dice {
       font-size: 2rem;
       margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .die {
+      width: 60px;
+      height: 60px;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #2c3e50;
+      transition: transform 0.2s;
+    }
+    .die.animate {
+      transform: scale(1.3);
     }
     .highlight {
-      font-size: 2.8rem;
+      font-size: 2.2rem;
       font-weight: bold;
       color: #34495e;
       display: inline-block;
       transition: transform 0.2s;
+      margin-top: 10px;
     }
     .highlight.animate {
       transform: scale(1.4);
@@ -86,8 +107,10 @@
   </div>
 
   <div class="dice">
-    <div>Lancer : <span class="highlight" id="die1">-</span> + <span class="highlight" id="die2">-</span> = <span class="highlight" id="sum">-</span></div>
+    <div class="die" id="die1">-</div>
+    <div class="die" id="die2">-</div>
   </div>
+  <div class="highlight">Somme : <span id="sum">-</span></div>
 
   <div class="controls">
     <button onclick="rollDice()" id="rollBtn">🎲 Lancer les dés</button>
@@ -143,51 +166,3 @@
       die1El.textContent = d1;
       die2El.textContent = d2;
       sumEl.textContent = total;
-
-      [die1El, die2El, sumEl].forEach(el => {
-        el.classList.add("animate");
-        setTimeout(() => el.classList.remove("animate"), 300);
-      });
-    }
-
-    function hold() {
-      if (gameEnded) return;
-      scores[currentPlayer] += turnScore;
-      turnScore = 0;
-
-      if (scores[currentPlayer] >= 50) {
-        gameEnded = true;
-        document.getElementById("rollBtn").style.display = "none";
-        document.getElementById("holdBtn").style.display = "none";
-        document.getElementById("endMessage").innerHTML = `🎉 Joueur ${currentPlayer + 1} a gagné la partie !<br>Score final :<br>Joueur 1 : ${scores[0]} points<br>Joueur 2 : ${scores[1]} points`;
-        document.getElementById("endgame").style.display = "block";
-        return;
-      }
-
-      switchPlayer();
-      updateUI();
-    }
-
-    function switchPlayer() {
-      currentPlayer = 1 - currentPlayer;
-    }
-
-    function resetGame() {
-      scores = [0, 0];
-      turnScore = 0;
-      currentPlayer = 0;
-      gameEnded = false;
-      document.getElementById("rollBtn").style.display = "inline-block";
-      document.getElementById("holdBtn").style.display = "inline-block";
-      document.getElementById("endgame").style.display = "none";
-      document.getElementById("message").textContent = "";
-      document.getElementById("die1").textContent = "-";
-      document.getElementById("die2").textContent = "-";
-      document.getElementById("sum").textContent = "-";
-      updateUI();
-    }
-
-    updateUI();
-  </script>
-</body>
-</html>
