@@ -82,8 +82,12 @@
       color: white;
       transition: background-color 0.2s;
     }
-    button:hover {
+    button:hover:not(:disabled) {
       background-color: #2980b9;
+    }
+    button:disabled {
+      background-color: #a0aebf;
+      cursor: not-allowed;
     }
     #message {
       margin-top: 20px;
@@ -117,7 +121,7 @@
 
   <div class="controls">
     <button onclick="rollDice()" id="rollBtn">🎲 Lancer les dés</button>
-    <button onclick="hold()" id="holdBtn">✅ Valider</button>
+    <button onclick="hold()" id="holdBtn" disabled>✅ Valider</button>
     <div id="message"></div>
   </div>
 
@@ -149,6 +153,9 @@
       document.getElementById("currentPlayerDisplay").textContent = currentPlayer + 1;
       document.getElementById("player1").classList.toggle("active", currentPlayer === 0);
       document.getElementById("player2").classList.toggle("active", currentPlayer === 1);
+
+      // Activer ou désactiver le bouton "Valider" selon le score
+      document.getElementById("holdBtn").disabled = turnScore === 0 || gameEnded;
     }
 
     function rollDice() {
@@ -189,7 +196,7 @@
     }
 
     function hold() {
-      if (gameEnded) return;
+      if (gameEnded || turnScore === 0) return;
       scores[currentPlayer] += turnScore;
       turnScore = 0;
 
